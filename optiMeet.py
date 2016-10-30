@@ -10,6 +10,10 @@ base_url = 'localhost:5000'
 def index():
     return render_template('halloween.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/create-event')
 def create_event():
     if request.args:
