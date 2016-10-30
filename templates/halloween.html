@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Halloween</title>
-	    <link href={{ url_for('static', filename='halloween.css')}} rel="stylesheet" >
+{% extends "master.html" %}
+{% block title %}
+OptiMeet
+{% endblock %}
 
-</head>
-<body>
+{% block head %}
+{{ super() }}
+ <link href={{ url_for('static', filename='halloween.css')}} rel="stylesheet" >
+{% endblock %}
+
+{% block content %}
 <div class="halloween">
 	<div class="head">
 		<div class="skull">
@@ -20,5 +23,4 @@
 
   <button type="submit" onclick="window.location.href='createEvent.html'">Create Event</button>
 </div>
-</body>
-</html>
+{% endblock %}
