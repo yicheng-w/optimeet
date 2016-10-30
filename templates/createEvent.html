@@ -1,42 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Create Event</title>
-    <link href={{ url_for('static', filename='style1.css')}} rel="stylesheet" >
- 
+{% extends "master.html" %}
+{% block title %}
+Create Event
+{% endblock %}
 
-</head>
-<body>
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h4>Create Event</h4>
     <form class="searchform cf" action={{url_for('create_event_action')}}>
-  <input type="text" placeholder="Enter a name for your Event"
-  name="eventName">
-  <input type=hidden id="long" name="long">
-  <input type=hidden id="lat" name="lat">
-  <button>Event Name</button>
-<br>
-<p> . </p>
-  <input type="text" placeholder="Enter your name please" name="name">
-  <button>Your Name</button>
-  <br>
-  <p>Please allow the browser to access your location</p>
-  <button id="create" type="submit">Create Event</button>
-</form>
+        <div class="row">
+            <div class="input-field col s12">
+                <input type="text" id="eventName" placeholder="Enter a name for your Event" name="eventName" autofocus>
+                <label for="eventName">Event Name</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input type="text" placeholder="Enter your good name please" name="name"
+                                                                             id="name">
+                <label for="name">Your Name</label>
+            </div>
+        </div>
+        <input type=hidden id="long" name="long">
+        <input type=hidden id="lat" name="lat">
+        <p>Please allow the browser to access your location</p>
+        <button class="btn waves-effect waves-light" type="submit"
+                                                     name="action">Create Event
+                                                     <i class="material-icons right">send</i>
+        </button>
+    </form>
+</div>
 
 <script>
-    window.onload = function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    };
-
-    function showPosition(position) {
-        document.getElementById('lat').value = position.coords.latitude;
-        document.getElementById('long').value = position.coords.longitude;
+window.onload = function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        Materialize.toast("Geolocation is not supported by this browser :(", 5000);
     }
+};
+
+function showPosition(position) {
+    document.getElementById('lat').value = position.coords.latitude;
+    document.getElementById('long').value = position.coords.longitude;
+}
 
 </script>
+{% endblock %}
 
-</body>
-</html>

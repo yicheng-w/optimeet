@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	{% block head %}
+	<title>{% block title %}{% endblock %} - OptiMeet</title>
+	<link href='http://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'></link>
+	<link type='text/css' rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.4/css/materialize.min.css' media='screen,projection'></link>
+	<link type='text/css' rel='stylesheet' href="../static/main.css"></link>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'></meta>
+	<link rel="shortcut icon" type="image/png" href="../static/icon.png"/>
+    <style>
+  body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+  .brand-logo {
+      margin-left: 20px;
+  }
+    </style>
+    {% endblock %}
+</head>
+
+<body class='grey lighten-3'>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.4/js/materialize.min.js'></script>
+    <div class="navbar-fixed">
+        <nav><div class="nav-wrapper blue darken-4">
+            
+		<a href="/" class="brand-logo left">OptiMeet</a>
+            </div></nav> 
+    </div>
+
+    <main>
+	<div id="content">{% block content %}{% endblock %}</div>
+    </main>
+
+    <footer class="page-footer grey darken-4">
+        <div class="container">
+            <div class="row">
+                <div class="col s4">
+                    <a href="/about">About Us</a>
+                </div>
+                <div class="col s4">
+                    <a href="/create-event">Create Event</a>
+                </div>
+                <div class="col s4">
+                    <a href="https://github.com/alex-wyc/optimeet">GitHub</a>
+                </div>
+            </div>
+            <div class="row">
+                <p class="white-text">Special shoutout to the organizers and sponsors of
+                HackNC 2016!</p>
+            </div>
+        </div>
+    </footer>
+</body>

@@ -1,42 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Join Event</title>
-    <link href={{ url_for('static', filename='style1.css')}} rel="stylesheet" >
- 
+{% extends "master.html" %}
+{% block title %}
+Join Event
+{% endblock %}
 
-</head>
-<body>
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h4>Join Event</h4>
     <form class="searchform cf">
-  <input type="text" placeholder="Enter your name please"
-  name="name">
-  <input type=hidden id="long" name="long">
-  <input type=hidden id="lat" name="lat">
-  <button>Your Name</button>
-<br>
-<p> . </p>
-  <input type="text" placeholder="Enter your group's invite code" name="auth">
-  <button>Invite Code</button>
-  <br>
-  <p>Please allow the browser to access your location</p>
-  <button id="create" type="submit">Join Event</button>
-</form>
+        <div class="row">
+            <div class="input-field col s12">
+                <input type="text" id="name" placeholder="Enter your name"
+                name="name" autofocus>
+                <label for="name">Your Name</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input type="text" placeholder="Enter your 4 digit invitation code please" name="auth" id="auth">
+                <label for="auth">4 Digit Invite Coe</label>
+            </div>
+        </div>
+        <input type=hidden id="long" name="long">
+        <input type=hidden id="lat" name="lat">
+        <p>Please allow the browser to access your location</p>
+        <button class="btn waves-effect waves-light" type="submit"
+                                                     name="action">Join Event
+                                                     <i class="material-icons right">send</i>
+        </button>
+    </form>
+</div>
 
 <script>
-    window.onload = function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    };
-
-    function showPosition(position) {
-        document.getElementById('lat').value = position.coords.latitude;
-        document.getElementById('long').value = position.coords.longitude;
+window.onload = function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        Materialize.toast("Geolocation is not supported by this browser :(", 5000);
     }
+};
+
+function showPosition(position) {
+    document.getElementById('lat').value = position.coords.latitude;
+    document.getElementById('long').value = position.coords.longitude;
+}
 
 </script>
-
-</body>
-</html>
+{% endblock %}
