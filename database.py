@@ -1,9 +1,39 @@
 import sqlite3
+import random
 
 class DBManager:
     def __init__(self):
         self.conn = sqlite3.connect("./db/database.db")
         self.c = conn.cursor()
+
+    def next_avaliable_id(self):
+        """
+        next_a: gives out the next avaliable id for the sites table
+        
+        Returns:
+            an integer that represents the next possible id
+        """
+        q = """SELECT sites.id FROM sites ORDER BY sites.id"""
+
+        result = self.c.execute(q).fetchall()
+
+        ##print result
+
+        if (len(result) == 0):
+            return 0
+
+        if result[0][0] != 0:
+            #print "0 index: " + str(result[0][0])
+            return 0
+
+        if (len(result) == 1):
+           return 1
+       
+        for i in range(1, len(result)):
+            if result[i][0] - result[i - 1][0] > 1:
+                return result[i - 1][0] + 1
+
+        return len(result)
 
     def create_event(self, event_name):
         """
@@ -17,8 +47,16 @@ class DBManager:
             a tuple of the form (event_id, auth_code)
             Note that auth_code is string of length 4
         """
+
+        auth_code = "%04d" % random.randint(0,9999)
+        id = self.next_avaliable_id()
+
+        q = """INSERT INTO events VALUES (?, ?, ?)"""
+
+        self.c.execute(q, (id, auth_code, event_name))
+        self.conn.commit()
         
-        return (1, "1234")
+        return (id, auth_code)
 
     def authenticate(self, event_id, auth_code):
         """
@@ -31,7 +69,13 @@ class DBManager:
         Returns:
             True if match, False otherwise
         """
-        return True
+
+        q = """SELECT * FROM events
+        WHERE events.id = ? AND events.auth_code = ?"""
+
+        r = self.c.execute(q, (event_id, auth_code)).fetchall()
+
+        return len(r)
 
     def get_all_loc_in_event(self, event_id):
         """
@@ -44,7 +88,12 @@ class DBManager:
             the list of tuples of all the people in the event
             [(long1, lat1), (long2, lat2) ...]
         """
-        return [(35.903636, -79.043628), (35.915680, -79.048175), (35.907672, -79.054301), (35.896418, -79.057854)]
+
+        q = """SELECT people.long, people.lat
+        FROM people
+        WHERE people.id = ?"""
+
+        return self.c.execute(q, (event_id)).fetchall()
 
     def add_person(self, event_id, name, long, lat):
         """
@@ -59,5 +108,11 @@ class DBManager:
         Returns:
             same as get_all_loc_in_event
         """
-        return [(35.903636, -79.043628), (35.915680, -79.048175), (35.907672, -79.054301), (35.896418, -79.057854)]
+
+        q = """INSERT INTO people VALUES (?, ?, ?, ?)"""
+
+        self.c.execute(q, (event_id, name, long, lat))
+        self.conn.commit()
+
+        return self.get_all_loc_in_event(event_id)
 
