@@ -11,3 +11,7 @@ hacknc project
 ###Project Description
 
 A simple web application to manage meeting friends at a convenient location.
+
+###Try It Out!
+[OptiMeet](https://104.236.86.43:2000)
+_Note:_You will likely be warned that the certificate is invalid. However, the application works well.
