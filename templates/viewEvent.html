@@ -20,12 +20,10 @@
 
 <body>
 <!--  The following is the div that is acting as a container to hold the map-->
-<div data-dojo-type="dijit/layout/ContentPane"
-           data-dojo-props="region:'right'"
-           style="width:250px;">
-        
-        <div id="dir"></div>
-      </div>
+<div id="sharing" style="z-index:9999">
+    <p>SHARING LINK: {{ link|safe }}</p>
+    <p>INVITE CODE: {{ auth }}</p>
+</div>
   <div id="map"></div>
 
   <script>

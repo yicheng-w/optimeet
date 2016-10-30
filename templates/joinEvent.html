@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Create Event</title>
+	<title>Join Event</title>
     <link href={{ url_for('static', filename='style1.css')}} rel="stylesheet" >
  
 
 </head>
 <body>
-    <form class="searchform cf" action={{url_for('create_event_action')}}>
+    <form class="searchform cf">
   <input type="text" placeholder="Enter a name for your Event"
-  name="eventName">
+  name="name">
   <input type=hidden id="long" name="long">
   <input type=hidden id="lat" name="lat">
-  <button>Event Name</button>
+  <button>Your Name</button>
 <br>
 <p> . </p>
-  <input type="text" placeholder="Enter your good name please" name="name">
-  <button>Your Name</button>
+  <input type="text" placeholder="Enter your good name please" name="auth">
+  <button>Invite Code</button>
   <br>
   <p>Please allow the browser to access your location</p>
-  <button id="create" type="submit">Create Event</button>
+  <button id="create" type="submit">Join Event</button>
 </form>
 
 <script>
