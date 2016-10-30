@@ -1,5 +1,5 @@
 from flask import *
-import utils
+import util
 from database import DBManager
 
 app = Flask(__name__)
@@ -19,8 +19,16 @@ def join_event(id):
 
 @app.route('view-event/<int:id>/<auth>/<name>')
 def view_event(id, auth, name):
+    if database.authenticate(id, auth_code):    
+        locations = database.get_all_loc_in_event(id)
+        meetup_places = get_list_of_locations(locations)
+        my_loc = database.get_my_location(id, name)
+        locations.remove(my_loc)
+        locations = my_loc + locations
 
-    return render_template('viewEvent.html', id=id, auth=auth, name=name)
+        return render_template('viewEvent.html', id=id, auth=auth, name=name, locs = locations, places = meetup_places)
+    else:
+        return render_template("unauthorized.html")
 
 if (__name__ == '__main__'):
     app.run(debug=True)
