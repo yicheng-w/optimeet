@@ -7,7 +7,7 @@ database = DBManager()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('halloween.html')
 
 @app.route('/create-event')
 def create_event():
