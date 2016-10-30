@@ -3,17 +3,17 @@ import random
 
 class DBManager:
     def __init__(self):
-        self.conn = sqlite3.connect("./db/database.db")
+        self.conn = sqlite3.connect("./db/database.db", check_same_thread=False)
         self.c = self.conn.cursor()
 
     def next_avaliable_id(self):
         """
-        next_a: gives out the next avaliable id for the sites table
+        next_a: gives out the next avaliable id for the events table
         
         Returns:
             an integer that represents the next possible id
         """
-        q = """SELECT sites.id FROM sites ORDER BY sites.id"""
+        q = """SELECT events.id FROM events ORDER BY events.id"""
 
         result = self.c.execute(q).fetchall()
 
@@ -77,7 +77,7 @@ class DBManager:
 
         return len(r)
 
-    def get_all_loc_in_event(self, event_id):
+    def get_all_people_in_event(self, event_id):
         """
         get_all_loc_in_event: return a list of location of all the people in ID
     
@@ -86,14 +86,14 @@ class DBManager:
         
         Returns:
             the list of tuples of all the people in the event
-            [(long1, lat1), (long2, lat2) ...]
+            [(person, long1, lat1), (person, long2, lat2) ...]
         """
 
-        q = """SELECT people.long, people.lat
+        q = """SELECT people.name, people.long, people.lat
         FROM people
         WHERE people.id = ?"""
 
-        return self.c.execute(q, (event_id)).fetchall()
+        return self.c.execute(q, (event_id,)).fetchall()
 
     def add_person(self, event_id, name, long, lat):
         """
@@ -114,7 +114,7 @@ class DBManager:
         self.c.execute(q, (event_id, name, long, lat))
         self.conn.commit()
 
-        return self.get_all_loc_in_event(event_id)
+        return self.get_all_people_in_event(event_id)
 
     def get_my_location(self, event_id, name):
         """
@@ -133,3 +133,15 @@ class DBManager:
 
         return self.c.execute(q, (event_id, name)).fetchall()
 
+    def __del__(self):
+        self.conn.close()
+
+if __name__ == '__main__':
+    db = DBManager()
+    id, authcode = db.create_event("Hello World")
+    print id
+    print authcode
+    locs = [("alice", 35.903636, -79.043628), ("bob", 35.915680, -79.048175), ("charles", 35.907672, -79.054301), ("dennis", 35.896418, -79.057854)]
+
+    for name, long, lat in locs:
+        db.add_person(id, name, long, lat)

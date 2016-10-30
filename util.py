@@ -41,9 +41,8 @@ def geographical_midpoint(list_of_locations):
 
     return (lat * 180 / pi, long * 180 / pi)
 
-def get_list_of_locations(list_of_locations, types=[], limits=5):
-    lat, long = geographical_midpoint(list_of_locations)
-    print lat, long
+def get_list_of_locations(list_of_locations, types=['restaurant'], limits=5):
+    long, lat = geographical_midpoint(list_of_locations)
     google_base = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" 
     parameters = {
             'key': google_key,
@@ -59,10 +58,25 @@ def get_list_of_locations(list_of_locations, types=[], limits=5):
         r = requests.get(google_base, params = parameters)
         asciir += r.text
         result += r.json()['results']
+    
+    else:
+        r = requests.get(google_base, params = parameters)
+        result += r.json()['results']
 
     result = sorted(result, key = lambda item: spherical_distance(item["geometry"]["location"]["lng"],
                                                                   item["geometry"]["location"]["lat"],
                                                                   long, lat))[:limits]
+
+
+    optimal = True
+
+    for entry in result:
+        if optimal:
+            entry['optimal'] = True
+            optimal = False
+        else:
+            entry['optimal'] = False
+
 
     #print asciir
 
@@ -82,4 +96,4 @@ def get_list_of_locations(list_of_locations, types=[], limits=5):
             "properties": r
             })
     
-    return esri_format
+    return json.dumps(esri_format)

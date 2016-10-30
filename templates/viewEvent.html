@@ -1,0 +1,146 @@
+<html>
+
+<head>
+    <title>{{ name }}</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0/dist/leaflet.css" />
+<link rel="stylesheet" href="https://js.arcgis.com/3.18/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+  <script src="https://unpkg.com/leaflet@1.0.0/dist/leaflet-src.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="https://unpkg.com/esri-leaflet@2.0.4"></script>
+  <style>
+    body { margin:0; padding:0; }
+    #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+  </style>
+</head>
+
+<body>
+<!--  The following is the div that is acting as a container to hold the map-->
+<div data-dojo-type="dijit/layout/ContentPane"
+           data-dojo-props="region:'right'"
+           style="width:250px;">
+        
+        <div id="dir"></div>
+      </div>
+  <div id="map"></div>
+
+  <script>
+//Check out more Sample code and API reference at http://esri.github.io/esri-leaflet/examples/
+
+//Adds the map control and sets the center point to Durham and zoom scale to 10. For more info on the Leaflet map control check out: http://leafletjs.com/reference.html#map-class
+
+//The following line of code adds a number of data points coming from a Esri rest endpoint.  The data is farmers markets in Wake County and from: http://data.ral.opendata.arcgis.com/datasets/953ff61e36bd468d8ae267437377fa9c_0.\ . The points are added as a feature layer which means you can see the points on the map and create a popup showing the information about the points.  To learn more about feature layers: http://esri.github.io/esri-leaflet/api-reference/layers/feature-layer.html
+
+var data = {{ places|safe }}
+var locations = {{ locs|safe }}
+var to_focus = {{ center|safe }}
+
+
+var map = L.map('map').setView(to_focus, 16); //35.9886° N, 78.9072° W
+
+//Adds a basemap to the map.  To see all the available basemaps: http://esri.github.io/esri-leaflet/api-reference/layers/basemap-layer.html
+L.esri.basemapLayer('Topographic').addTo(map);
+
+var render_data = function(d, m) {
+    var pointicon = L.icon({
+        iconUrl: '../../../static/location-icon.png',
+        iconSize: [25, 30]
+    });
+    var optimalpointicon = L.icon({
+        iconUrl: '../../../static/optimal-location.png',
+        iconSize: [30, 35]
+    });
+    var personicon = L.icon({
+        iconUrl: '../../../static/people.png',
+        iconSize: [25, 30]
+    });
+    var me = L.icon({
+        iconUrl: '../../../static/me.png',
+        iconSize: [30, 35]
+    });
+
+    L.geoJson(d, {
+        pointToLayer: function(feature, latlng) {
+            console.log(latlng);
+            if (feature.properties.optimal) {
+                var marker = L.marker(latlng, {icon: optimalpointicon});
+            }
+            else {
+                var marker = L.marker(latlng, {icon: pointicon});
+            }
+
+            var tooltiptext = feature.properties.name + " (" +
+                feature.properties.rating + " stars)" + "<br>" +
+                feature.properties.vicinity + "<br>" +
+                "<a href=\"https://maps.google.com?saddr=Current+Location&daddr="
+                + latlng.lat + "," + latlng.lng + "\">Take Me There</a>"
+
+            marker.bindPopup(tooltiptext);
+            return marker;
+        }
+    }).addTo(map);
+
+    L.geoJson(m, {
+        pointToLayer: function(feature, latlng) {
+            if (feature.properties.me) {
+                var marker = L.marker(latlng, {icon: me});
+            }
+            else {
+                var marker = L.marker(latlng, {icon: personicon});
+            }
+
+            var tooltiptext = feature.properties.name;
+            marker.bindPopup(tooltiptext);
+            return marker;
+        }
+    }).addTo(map);
+};
+
+render_data(data, locations);
+
+//var directions = new Directions({
+//          canModifyStops: false,
+//          traffic: true,
+//          stops: [my_loc, data.features[0].geometry.coordinates],
+//          map: map
+//          // --------------------------------------------------------------------
+//          // New constuctor option and property showSaveButton added at version
+//          // 3.17 to allow saving route. For more information see the API Reference.
+//          // https://developers.arcgis.com/javascript/3/jsapi/directions-amd.html#showsavebutton
+//          //
+//          // Uncomment the line below to add the save button to the Directions widget
+//          // --------------------------------------------------------------------
+//          // , showSaveButton: true
+//        },"dir");
+//directions.startup();
+//})});
+// load GeoJSON from an external file.  
+//Replace URL below to point to your GeoJSON
+//$.getJSON("https://s3-us-west-2.amazonaws.com/s.cdpn.io/131702/north_carolina_bicycle_crash_data_heatmap__(1).geojson", function(data) {
+//  //Create bike icon to style points
+//    var bikeIcon = L.icon({
+//      //Replace URL on the next line to point to your icon
+//    iconUrl: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/131702/bikeCrash.png',
+//    iconSize: [60,50]
+//  });
+//  // add GeoJSON layer to the map once the file is loaded
+//   L.geoJson(data,{
+// pointToLayer: function(feature,latlng){
+//   //Create Bike Icon Marker
+//  var marker = L.marker(latlng,{icon: bikeIcon});
+//    //To show the fields in your data, replace the field names in the {} to match your data
+//  marker.bindPopup(feature.properties.crash_date + '<br/>' + feature.properties.bike_sex + '<br/>' + feature.properties.crash_type);
+//  return marker;
+//}
+//     //add data layer containing bike crash data to the map
+//  }).addTo(map);
+//});
+
+  </script>
+</body>
+
+</html>

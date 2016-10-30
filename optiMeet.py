@@ -19,14 +19,40 @@ def join_event(id):
 
 @app.route('/view-event/<int:id>/<auth>/<name>')
 def view_event(id, auth, name):
-    if database.authenticate(id, auth_code):    
-        locations = database.get_all_loc_in_event(id)
-        meetup_places = get_list_of_locations(locations)
-        my_loc = database.get_my_location(id, name)
-        locations.remove(my_loc)
-        locations = my_loc + locations
+    if database.authenticate(id, auth):    
+        locations = database.get_all_people_in_event(id)
+        cleaned_list = []
+        for aname, long, lat in locations:
+            cleaned_list.append((lat, long))
 
-        return render_template('viewEvent.html', id=id, auth=auth, name=name, locs = locations, places = meetup_places)
+        ctr = list(util.geographical_midpoint(cleaned_list))
+        ctr[0], ctr[1] = ctr[1],ctr[0]
+
+        meetup_places = util.get_list_of_locations(cleaned_list)
+        esri_people = {
+                "type": "FeatureCollection",
+                "features": []
+                }
+        for aname, long, lat in locations:
+            object = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [lat, long]
+                    },
+                "properties": {
+                    "name": aname,
+                    'me': False
+                    }
+                }
+            if aname == name:
+                object['properties']['me'] = True
+
+            esri_people['features'].append(object)
+
+        esri_people = json.dumps(esri_people)
+
+        return render_template('viewEvent.html', id=id, auth=auth, name=name, locs = esri_people, places = meetup_places, center = ctr)
     else:
         return render_template("unauthorized.html")
 
