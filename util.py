@@ -83,5 +83,3 @@ def get_list_of_locations(list_of_locations, types=[], limits=5):
             })
     
     return esri_format
-
-print get_list_of_locations(test_locations, ['restaurant'])

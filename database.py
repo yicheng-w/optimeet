@@ -116,3 +116,20 @@ class DBManager:
 
         return self.get_all_loc_in_event(event_id)
 
+    def get_my_location(self, event_id, name):
+        """
+        get_my_location: get my location based on name
+    
+        Args:
+            event_id (type): TODO
+            name (type): TODO
+        
+        Returns:
+            the tuple of (long, lat) or None
+        """
+        
+        q = """SELECT people.long, people.lat FROM people
+        WHERE people.id = ? AND people.name = ?"""
+
+        return self.c.execute(q, (event_id, name)).fetchall()
+
