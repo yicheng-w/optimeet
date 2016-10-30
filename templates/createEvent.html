@@ -35,19 +35,14 @@ Create Event
 </div>
 
 <script>
-window.onload = function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        Materialize.toast("Geolocation is not supported by this browser :(", 5000);
-    }
-};
-
-function showPosition(position) {
-    document.getElementById('lat').value = position.coords.latitude;
-    document.getElementById('long').value = position.coords.longitude;
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById('lat').value = position.coords.latitude;
+        document.getElementById('long').value = position.coords.longitude;
+    });
+} else {
+    Materialize.toast("Geolocation is not supported by this browser :(", 5000);
 }
-
 </script>
 {% endblock %}
 
