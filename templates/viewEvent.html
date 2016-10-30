@@ -1,7 +1,10 @@
-<html>
+{% extends "master.html" %}
+{% block title %}
+{{ name }}
+{% endblock %}
 
-<head>
-    <title>{{ name }}</title>
+{% block head %}
+{{ super() }}
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
@@ -15,16 +18,61 @@
   <style>
     body { margin:0; padding:0; }
     #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+    .card {width: 300px;}
   </style>
-</head>
 
-<body>
+{% endblock %}
+
+
+{% block content %}
 <!--  The following is the div that is acting as a container to hold the map-->
-<div id="sharing" style="z-index:9999">
-    <p>SHARING LINK: {{ link|safe }}</p>
-    <p>INVITE CODE: {{ auth }}</p>
-</div>
+<style>
+    .above-map {
+        z-index: 400;
+    }
+
+    #infobar {
+        position: absolute;
+        top: 70px;
+        right: 10px;
+    }
+
+    #share-btn {
+        position: absolute;
+        left: 10px;
+        bottom: 0px;
+    }
+</style>
   <div id="map"></div>
+<div class="above-map col s3 offset-s9" id="infobar">
+    <div class="card blue darken-3">
+        <div class="card-content white-text">
+            <span class="card-title">{{ name }}</span>
+            <hr>
+            <p><b>Optimal Location:</b> <span id="locationName"></span></p>
+            <p><b>Address:</b> <span id="locationAddr"></span></p>
+            <br>
+            <center>
+            <a class="blue darken-1 waves-effect waves-light btn" href="" id="goto">
+                <i class="material-icons right">send</i>
+                Take Me There
+            </a>
+            </center>
+            <hr>
+            <p><b>Party Members:</b></p>
+            <div id="friends"></div>
+            <hr>
+            <p><b>Invite Others</b></p>
+            <label for="sharingLink" class="white-text">Sharing Link</label>
+            <input onClick="this.setSelectionRange(0, this.value.length)"
+                   value="{{link|safe}}" id="sharingLink"/>
+            <label for="authCode" class="white-text">Invitation Code</label>
+            <input onClick="this.setSelectionRange(0, this.value.length)"
+                   value="{{auth}}" id="authCode"/>
+            </center>
+        </div>
+    </div>
+</div>
 
   <script>
 //Check out more Sample code and API reference at http://esri.github.io/esri-leaflet/examples/
@@ -38,7 +86,7 @@ var locations = {{ locs|safe }}
 var to_focus = {{ center|safe }}
 
 
-var map = L.map('map').setView(to_focus, 16); //35.9886° N, 78.9072° W
+var map = L.map('map', { zoomControl:false }).setView(to_focus, 16); //35.9886° N, 78.9072° W
 
 //Adds a basemap to the map.  To see all the available basemaps: http://esri.github.io/esri-leaflet/api-reference/layers/basemap-layer.html
 L.esri.basemapLayer('Topographic').addTo(map);
@@ -66,6 +114,9 @@ var render_data = function(d, m) {
             console.log(latlng);
             if (feature.properties.optimal) {
                 var marker = L.marker(latlng, {icon: optimalpointicon});
+                document.getElementById('locationName').innerHTML = feature.properties.name;
+                document.getElementById('locationAddr').innerHTML = feature.properties.vicinity;
+                document.getElementById('goto').href = "https://maps.google.com?saddr=Current+Location&daddr=" + latlng.lat + "," + latlng.lng
             }
             else {
                 var marker = L.marker(latlng, {icon: pointicon});
@@ -89,6 +140,8 @@ var render_data = function(d, m) {
             }
             else {
                 var marker = L.marker(latlng, {icon: personicon});
+                document.getElementById("friends").innerHTML +=
+                    feature.properties.name + "<br>";
             }
 
             var tooltiptext = feature.properties.name;
@@ -99,46 +152,5 @@ var render_data = function(d, m) {
 };
 
 render_data(data, locations);
-
-//var directions = new Directions({
-//          canModifyStops: false,
-//          traffic: true,
-//          stops: [my_loc, data.features[0].geometry.coordinates],
-//          map: map
-//          // --------------------------------------------------------------------
-//          // New constuctor option and property showSaveButton added at version
-//          // 3.17 to allow saving route. For more information see the API Reference.
-//          // https://developers.arcgis.com/javascript/3/jsapi/directions-amd.html#showsavebutton
-//          //
-//          // Uncomment the line below to add the save button to the Directions widget
-//          // --------------------------------------------------------------------
-//          // , showSaveButton: true
-//        },"dir");
-//directions.startup();
-//})});
-// load GeoJSON from an external file.  
-//Replace URL below to point to your GeoJSON
-//$.getJSON("https://s3-us-west-2.amazonaws.com/s.cdpn.io/131702/north_carolina_bicycle_crash_data_heatmap__(1).geojson", function(data) {
-//  //Create bike icon to style points
-//    var bikeIcon = L.icon({
-//      //Replace URL on the next line to point to your icon
-//    iconUrl: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/131702/bikeCrash.png',
-//    iconSize: [60,50]
-//  });
-//  // add GeoJSON layer to the map once the file is loaded
-//   L.geoJson(data,{
-// pointToLayer: function(feature,latlng){
-//   //Create Bike Icon Marker
-//  var marker = L.marker(latlng,{icon: bikeIcon});
-//    //To show the fields in your data, replace the field names in the {} to match your data
-//  marker.bindPopup(feature.properties.crash_date + '<br/>' + feature.properties.bike_sex + '<br/>' + feature.properties.crash_type);
-//  return marker;
-//}
-//     //add data layer containing bike crash data to the map
-//  }).addTo(map);
-//});
-
   </script>
-</body>
-
-</html>
+  {% endblock %}
