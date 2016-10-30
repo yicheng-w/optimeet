@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Unauthorized</title>
-	    <link href={{ url_for('static', filename='halloween.css')}} rel="stylesheet" >
+{% extends "master.html" %}
+{% block title %}
+Unauthorized
+{% endblock %}
 
-</head>
-<body>
-<h1>No, that's wrong.</h1>
+{% block head %}
+{{ super() }}
+<link href={{ url_for('static', filename='halloween.css')}} rel="stylesheet" >
+{% endblock %}
+
+{% block content %}
+
+<h1>No, that's the wrong code.</h1>
 <div class="halloween">
 	<div class="head">
 		<div class="skull">
@@ -19,5 +23,5 @@
 	<div class="body"></div>
 	<div class="legs"></div>
 </div>
-</body>
-</html>
+
+{% endblock %}
