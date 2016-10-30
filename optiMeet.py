@@ -1,5 +1,5 @@
 from flask import *
-import utils
+import util
 from database import DBManager
 
 app = Flask(__name__)
@@ -19,15 +19,8 @@ def join_event(id):
 
 @app.route('view-event/<int:id>/<auth>/<name>')
 def view_event(id, auth, name):
-<<<<<<< HEAD
-
     return render_template('viewEvent.html', id=id, auth=auth, name=name)
 
 if (__name__ == '__main__'):
     app.run(debug=True)
-=======
-    return render_template('viewEvent.html', id=id, auth=auth, name=name)
 
-if (__name__ == '__main__'):
-    app.run(debug=True)
->>>>>>> merge conflice :3
