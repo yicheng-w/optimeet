@@ -4,7 +4,7 @@ import random
 class DBManager:
     def __init__(self):
         self.conn = sqlite3.connect("./db/database.db")
-        self.c = conn.cursor()
+        self.c = self.conn.cursor()
 
     def next_avaliable_id(self):
         """
