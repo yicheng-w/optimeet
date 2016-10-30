@@ -9,15 +9,15 @@ database = DBManager()
 def index():
     return render_template('index.html')
 
-@app.route('create-event')
+@app.route('/create-event')
 def create_event():
     return render_template('createEvent.html')
 
-@app.route('join-event/<int:id>')
+@app.route('/join-event/<int:id>')
 def join_event(id):
     return render_template('joinEvent.html', id=id)
 
-@app.route('view-event/<int:id>/<auth>/<name>')
+@app.route('/view-event/<int:id>/<auth>/<name>')
 def view_event(id, auth, name):
     return render_template('viewEvent.html', id=id, auth=auth, name=name)
 
