@@ -7,17 +7,17 @@ database = DBManager()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('halloween.html')
 
-@app.route('create-event')
+@app.route('/create-event')
 def create_event():
     return render_template('createEvent.html')
 
-@app.route('join-event/<int:id>')
+@app.route('/join-event/<int:id>')
 def join_event(id):
     return render_template('joinEvent.html', id=id)
 
-@app.route('view-event/<int:id>/<auth>/<name>')
+@app.route('/view-event/<int:id>/<auth>/<name>')
 def view_event(id, auth, name):
     if database.authenticate(id, auth_code):    
         locations = database.get_all_loc_in_event(id)
@@ -32,3 +32,4 @@ def view_event(id, auth, name):
 
 if (__name__ == '__main__'):
     app.run(debug=True)
+
